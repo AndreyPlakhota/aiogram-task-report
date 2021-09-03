@@ -1,3 +1,5 @@
+import aiogram.utils.markdown as md
+from aiogram.types import ParseMode
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from states.states import UserRegistration, AddingTaskStates
@@ -49,7 +51,17 @@ async def cmd_show_today_tasks(message: types.Message):
     async with db_session() as session:
         tasks_list = await session.execute(get_tasks_list)
         for task in tasks_list.scalars():
-            print(f'Результат: {task.task_name, task.start_time, task.end_time}')
+            await message.bot.send_message(
+                message.from_user.id,
+                md.text(
+                    md.text(f'Задача: {md.bold(task.task_name)}'),
+                    md.text(f'Описание: {md.italic(task.description)}'),
+                    md.text(f'Время начала: {md.bold(task.start_time)}'),
+                    md.text(f'Время окончания: {md.bold(task.end_time)}'),
+                    sep='\n'
+                ),
+                parse_mode=ParseMode.MARKDOWN
+            )
 
 
 def register_commands(dp: Dispatcher):
