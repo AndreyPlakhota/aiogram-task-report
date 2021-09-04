@@ -17,7 +17,9 @@ async def set_bot_commands(bot: Bot):
         BotCommand(command='start', description='Приветствие'),
         BotCommand(command='adduser', description='Добавление пользователя в базу данных'),
         BotCommand(command='addtask', description='Добавление задачи в базу данных'),
-        BotCommand(command='todaytasks', description='Отправляет список, добавленных за текущий день задач')
+        BotCommand(command='todaytasks', description='Отправляет список, добавленных за текущий день задач'),
+        BotCommand(command='deletetask', description='Удаление задачи'),
+        BotCommand(command='cancel', description='Сброс состояния пользователя')
     ]
     await bot.set_my_commands(commands)
 

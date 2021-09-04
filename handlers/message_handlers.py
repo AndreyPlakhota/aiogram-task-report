@@ -6,6 +6,8 @@ from sqlalchemy.dialects.postgresql import insert
 from database.db_models import User
 from states.states import UserRegistration, AddingTaskStates
 from keyboards.inline_keyboards import confirm_keyboard
+from database.db_models import Task
+from sqlalchemy import select
 
 
 async def user_registration(message: types.Message, state: FSMContext):
@@ -83,10 +85,22 @@ async def add_task_end_time(message: types.Message, state: FSMContext):
     await message.bot.send_message(message.chat.id, text='Сохранить задачу?', reply_markup=confirm_keyboard())
 
 
+async def delete_task(message: types.Message, state: FSMContext):
+    """
+    Удаляет задачу по введённому id
+    """
+    db_session = message.bot.get('db')
+    delete_task_query = select(Task).where(Task.id == int(message.text))
+    async with db_session() as session:
+        await session.execute(delete_task_query)
+    await message.reply('Задача удалена', reply=False)
+    await state.finish()
+
+
 def register_message_handlers(dp: Dispatcher):
     dp.register_message_handler(user_registration, state=UserRegistration.adding_user)
     dp.register_message_handler(add_task_name, state=AddingTaskStates.adding_task_name)
     dp.register_message_handler(add_task_description, state=AddingTaskStates.adding_description)
     dp.register_message_handler(add_task_start_time, state=AddingTaskStates.adding_start_time)
     dp.register_message_handler(add_task_end_time, state=AddingTaskStates.adding_end_time)
-    dp.register_message_handler(add_task_end_time, state=AddingTaskStates.adding_end_time)
+    dp.register_message_handler(delete_task, state=AddingTaskStates.delete_task)

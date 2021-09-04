@@ -26,7 +26,7 @@ async def save_task(call: types.CallbackQuery, state: FSMContext):
         async with db_session() as session:
             await session.execute(add_task)
             await session.commit()
-        await call.message.reply('Задача сохранена', reply=False)
+        await call.message.edit_text('Задача сохранена')
         await state.finish()
 
     elif call.data == 'task_save_declined':
@@ -37,6 +37,6 @@ async def save_task(call: types.CallbackQuery, state: FSMContext):
 def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(
         save_task,
-        lambda call: True,
+        lambda call: call.data in ['task_save_confirmed', 'task_save_declined'],
         state=AddingTaskStates.save_task
     )
