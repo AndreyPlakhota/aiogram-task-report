@@ -51,6 +51,7 @@ async def cmd_show_today_tasks(message: types.Message):
     get_tasks_list = select(Task).where(Task.user_id == message.from_user.id, Task.date == datetime.date.today())
     async with db_session() as session:
         tasks_list = await session.execute(get_tasks_list)
+        
         result_text = [
             md.text(
                 md.text(f'Задача: {md.bold(task.task_name)} ID: {md.bold(task.id)}'),
