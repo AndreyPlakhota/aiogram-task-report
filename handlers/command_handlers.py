@@ -70,7 +70,7 @@ async def delete_task(message: types.Message):
     Позволяет удалить задачу по её id
     """
     await AddingTaskStates.delete_task.set()
-    await message.reply('Введите id задачи, которую хотиту удалить')
+    await message.reply('Введите id задачи, которую хотите удалить')
 
 
 def register_commands(dp: Dispatcher):
